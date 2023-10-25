@@ -104,7 +104,7 @@ class Game
 
         if ($playerTotalScore > 21) {
             echo 'あなたの負けです。'.PHP_EOL;
-        } elseif ($dealer->getScore() > 21) {
+        } elseif ($dealerTotalScore > 21) {
             echo 'あなたの勝ちです!'.PHP_EOL;
         } elseif ($playerTotalScore === $dealerTotalScore) {
             echo '引き分けです。'.PHP_EOL;
