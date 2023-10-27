@@ -1,9 +1,17 @@
 <?php
+namespace Blackjack;
+
 require_once 'Player.php';
 class Dealer extends Player
 {
     protected $name = 'ディーラー';
-
+    public function initHand($deck)
+    {
+        $this->addCardAndScore($deck->drawACard());
+        $this->displayLastHand($this->getName(), $this->getHand());
+        $this->addCardAndScore($deck->drawACard());
+        $this->holeCard();
+    }
     // ディーラーの2枚目のカードは表示しない
     public function holeCard()
     {
@@ -11,9 +19,9 @@ class Dealer extends Player
     }
 
     // ディーラーの2枚目のカードを表示
-    public function openSecondHand($name, $hands)
+    public function openSecondHand($name, $hand)
     {
-        $lastHand = array_slice($hands, -1, 1);
+        $lastHand = array_slice($hand, -1, 1);
         echo "{$name}の引いた2枚目のカードは".$lastHand[0][0].'の'.$lastHand[0][1].'でした。'.PHP_EOL;
     }
 
@@ -29,7 +37,51 @@ class Dealer extends Player
             }
 
             $dealer->addCardAndScore($deck->drawACard());
-            $dealer->displayLastHand($dealer->name, $dealer->hands);
+            $dealer->displayLastHand($dealer->name, $dealer->hand);
+        }
+    }
+
+    // 全員の得点を表示
+    public function displayAllPlayerScores($player, $cpuPlayer, $dealer, $numberOfCpu)
+    {
+        echo "{$player->getName()}の得点は{$player->getScore()}です。".PHP_EOL;
+        if ($numberOfCpu > 0) {
+            for ($i = 0; $i < $numberOfCpu; $i++) {
+                echo "{$cpuPlayer[$i]->getName()}の得点は{$cpuPlayer[$i]->getScore()}です。".PHP_EOL;
+            }
+        }
+        echo "{$dealer->getName()}の得点は{$dealer->getScore()}です。".PHP_EOL;
+    }
+
+    // 勝敗判定
+    public function judge($player, $cpuPlayer, $dealer, $numberOfCpu)
+    {
+        if ($player->getScore() > 21) { // プレイヤーのバースト負け
+            echo "{$player->getname()}の負けです。".PHP_EOL;
+        } elseif ($dealer->getScore() > 21) { // ディーラーのバースト負け
+            echo "{$player->getname()}の勝ちです!".PHP_EOL;
+        } elseif ($player->getScore() === $dealer->getScore()) {
+            echo "{$player->getname()}と{$dealer->getName()}は引き分けです。".PHP_EOL;
+        } elseif ($player->getScore() > $dealer->getScore()) {
+            echo "{$player->getname()}の勝ちです!".PHP_EOL;
+        } elseif ($player->getScore() < $dealer->getScore()) {
+            echo "{$player->getname()}の負けです。".PHP_EOL;
+        }
+
+        if ($numberOfCpu > 0) {
+            for ($i = 0; $i < $numberOfCpu; $i++) {
+                if ($cpuPlayer[$i]->getScore() > 21) { // CPUのバースト負け
+                    echo "{$cpuPlayer[$i]->getname()}の負けです。".PHP_EOL;
+                } elseif ($dealer->getScore() > 21) { // ディーラーのバースト負け
+                    echo "{$cpuPlayer[$i]->getname()}の勝ちです!".PHP_EOL;
+                } elseif ($cpuPlayer[$i]->getScore() === $dealer->getScore()) {
+                    echo "{$cpuPlayer[$i]->getname()}と{$dealer->getName()}は引き分けです。".PHP_EOL;
+                } elseif ($cpuPlayer[$i]->getScore() > $dealer->getScore()) {
+                    echo "{$cpuPlayer[$i]->getname()}の勝ちです!".PHP_EOL;
+                } elseif ($cpuPlayer[$i]->getScore() < $dealer->getScore()) {
+                    echo "{$cpuPlayer[$i]->getname()}の負けです。".PHP_EOL;
+                }
+            }
         }
     }
 }
