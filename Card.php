@@ -1,4 +1,6 @@
 <?php
+namespace Blackjack;
+
 class Card
 {
     private $suits = ['スペード', 'クラブ', 'ハート', 'ダイヤ'];

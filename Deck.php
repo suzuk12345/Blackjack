@@ -1,4 +1,6 @@
 <?php
+namespace Blackjack;
+
 require_once 'Card.php';
 
 class Deck
