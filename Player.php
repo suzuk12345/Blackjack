@@ -82,7 +82,7 @@ class Player
                 default:
                     break;
             }
-            if ($stand === true) {
+            if ($stand) {
                 break;
             }
         }

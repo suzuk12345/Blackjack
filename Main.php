@@ -4,6 +4,6 @@ namespace Blackjack;
 require_once 'Game.php';
 
 $game = new Game();
-$game->setNumberOfCpuPlayer();
-$game->createCpuPlayer($game->getNamberOfCpu());
+
+// ゲームスタート()
 $game->start();

@@ -42,7 +42,7 @@ class Dealer extends Player
     }
 
     // 全員の得点を表示
-    public function displayAllPlayerScores($player, $cpuPlayer, $dealer, $numberOfCpu)
+    public function displayAllScores($player, $cpuPlayer, $dealer, $numberOfCpu)
     {
         echo "{$player->getName()}の得点は{$player->getScore()}です。".PHP_EOL;
         if ($numberOfCpu > 0) {
