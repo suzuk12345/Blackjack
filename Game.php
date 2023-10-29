@@ -15,15 +15,13 @@ class Game
     private $player;
     private $dealer;
     private $numberOfCpu = 0;
-    private $judge;
-    private $action;
     private $chip;
     private $cpuPlayerList = [];
     private $end = false;
 
     public function start()
     {
-        $this->judge = new judge();
+        // $this->judge = new judge();
         $this->chip = new Chip();
 
         // CPUの数を設定
@@ -52,8 +50,8 @@ class Game
             // ディーラー:カードを2枚引く&一枚目のみ表示
             $this->dealer->initHand($this->deck);
 
-            // プレイヤー:得点が20以下の場合Hit or Stand
-            $this->player->hitOrStand($this->player, $this->deck);
+            // プレイヤー:得点が20以下の場合Hit or Stand or Action
+            $this->player->hitOrStandOrAction($this->player, $this->deck, $this->chip);
 
             // CPU:得点が16以下の場合Hit(ソフト17でstand)*人数分
             if ($this->numberOfCpu > 0) {
@@ -69,8 +67,8 @@ class Game
             // ディーラー:全員の得点を表示
             $this->dealer->displayAllScores($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
 
-            // ディーラー:全員の勝敗判定とチップ支払い
-            $this->judge->judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
+            // ディーラー:全員の勝敗判定と配当支払い
+            Judge::judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
             $this->chip->payout($this->player);
 
             // チップがなくなったら(10以下)強制終了

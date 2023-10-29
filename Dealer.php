@@ -6,11 +6,6 @@ class Dealer extends Player
 {
     protected $name = 'ディーラー';
 
-    // // testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
-    // public function __construct(protected $score = 21)
-    // {
-    // }
-
     public function initHand($deck)
     {
         $this->addCardAndScore($deck->drawACard());

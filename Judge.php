@@ -4,7 +4,7 @@ namespace Blackjack;
 class Judge
 {
     // 勝敗判定
-    public function judge($player, $cpuPlayer, $dealer, $numberOfCpu)
+    public static function judge($player, $cpuPlayer, $dealer, $numberOfCpu)
     {
         if ($player->getScore() > 21) { // プレイヤーのバースト負け
             echo "{$player->getname()}の負けです。".PHP_EOL;

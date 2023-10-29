@@ -6,6 +6,7 @@ class Chip
     private $playerFund = 1000;
     private $playerStake = 0;
 
+    // 賭けるチップの額を決定
     public function playerBet()
     {
         while (true) {
@@ -21,28 +22,37 @@ class Chip
         }
     }
 
+    // 配当支払い
     public function payout($player)
     {
         switch ($player->getResult()) {
             case 'win':
                 if ($player->getBlacjak()) {
-                    echo "ブラックジャック/勝ち:賭けたチップ({$this->playerStake})と1.5倍の配当が支払われます。".PHP_EOL;
+                    echo "ブラックジャック/勝ち:賭けたチップ({$this->playerStake})+1.5倍の配当が支払われます。".PHP_EOL;
                     $this->playerFund += $this->playerStake * 2.5;
                     $this->playerStake = 0;
                     echo "チップ残高:{$this->playerFund}".PHP_EOL;
                     break;
                 } else {
-                    echo "勝ち:賭けたチップ({$this->playerStake})と等倍の配当が支払われます。".PHP_EOL;
+                    echo "勝ち:賭けたチップ({$this->playerStake})+等倍の配当が支払われます。".PHP_EOL;
                     $this->playerFund += $this->playerStake * 2;
                     $this->playerStake = 0;
                     echo "チップ残高:{$this->playerFund}".PHP_EOL;
                     break;
                 }
             case 'lose':
-                echo "負け:賭けたチップ({$this->playerStake})は没収されます。".PHP_EOL;
-                $this->playerStake = 0;
-                echo "チップ残高:{$this->playerFund}".PHP_EOL;
-                break;
+                if ($player->getAction() == 'surrender') {
+                    echo "サレンダー/負け:賭けたチップ({$this->playerStake})の半分が返却されます。".PHP_EOL;
+                    $this->playerFund += $this->playerStake / 2;
+                    $this->playerStake = 0;
+                    echo "チップ残高:{$this->playerFund}".PHP_EOL;
+                    break;
+                } else {
+                    echo "負け:賭けたチップ({$this->playerStake})は没収されます。".PHP_EOL;
+                    $this->playerStake = 0;
+                    echo "チップ残高:{$this->playerFund}".PHP_EOL;
+                    break;
+                }
             case 'draw':
                 echo "引き分け:賭けたチップ({$this->playerStake})は返却されます。".PHP_EOL;
                 $this->playerFund += $this->playerStake;
@@ -54,8 +64,22 @@ class Chip
         }
     }
 
+    // チップの残高を取得
     public function getPlayerFund()
     {
         return $this->playerFund;
+    }
+
+    // 賭けているチップの額を取得
+    public function getPlayerStake()
+    {
+        return $this->playerStake;
+    }
+
+    //ダブルダウンの処理
+    public function processDoubledown()
+    {
+        $this->playerFund -= $this->playerStake;
+        $this->playerStake *= 2;
     }
 }
