@@ -18,6 +18,11 @@ class CpuPlayer extends Player
                 $cpuPlayerList[$i]->displayLastHand($cpuPlayerList[$i]->getName(), $cpuPlayerList[$i]->getHand());
                 $cpuPlayerList[$i]->addCardAndScore($deck->drawACard());
                 $cpuPlayerList[$i]->displayLastHand($cpuPlayerList[$i]->getName(), $cpuPlayerList[$i]->getHand());
+
+                if ($this->score == 21) {
+                    $this->blackjack = true;
+                    echo "{$this->name}:ブラックジャック!".PHP_EOL;
+                }
             }
         }
     }

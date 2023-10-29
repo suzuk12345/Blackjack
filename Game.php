@@ -5,54 +5,84 @@ require_once 'Deck.php';
 require_once 'Player.php';
 require_once 'Dealer.php';
 require_once 'CpuPlayer.php';
+require_once 'Judge.php';
+require_once 'Action.php';
+require_once 'Chip.php';
 
 class Game
 {
-    private $deck = '';
-    private $player = '';
-    private $dealer = '';
+    private $deck;
+    private $player;
+    private $dealer;
     private $numberOfCpu = 0;
+    private $chip;
     private $cpuPlayerList = [];
+    private $end = false;
 
     public function start()
     {
-        $this->deck = new Deck();
-        $this->player = new Player();
-        $this->dealer = new Dealer();
+        // $this->judge = new judge();
+        $this->chip = new Chip();
 
-        // プレイヤー:カードを二枚引く&表示
-        $this->player->initHand($this->deck);
+        // CPUの数を設定
+        $this->setNumberOfCpuPlayer();
 
-        // CPU:カードを二枚引く&表示*人数分
-        if ($this->numberOfCpu > 0) {
-            $this->cpuPlayerList[0]->cpuInitHand($this->deck, $this->cpuPlayerList, $this->numberOfCpu);
+        while (true) {
+            // デッキ、プレイヤー初期化
+            $this->deck = new Deck();
+            $this->player = new Player();
+            $this->dealer = new Dealer();
+            $this->cpuPlayerList = [];
+
+            // 設定した分CPUを生成
+            $this->createCpuPlayer();
+
+            $this->chip->playerBet();
+
+            // プレイヤー:カードを二枚引く&表示
+            $this->player->initHand($this->deck);
+
+            // CPU:カードを二枚引く&表示*人数分
+            if ($this->numberOfCpu > 0) {
+                $this->cpuPlayerList[0]->cpuInitHand($this->deck, $this->cpuPlayerList, $this->numberOfCpu);
+            }
+
+            // ディーラー:カードを2枚引く&一枚目のみ表示
+            $this->dealer->initHand($this->deck);
+
+            // プレイヤー:得点が20以下の場合Hit or Stand or Action
+            $this->player->hitOrStandOrAction($this->player, $this->deck, $this->chip);
+
+            // CPU:得点が16以下の場合Hit(ソフト17でstand)*人数分
+            if ($this->numberOfCpu > 0) {
+                $this->cpuPlayerList[0]->cpuHitOrStand($this->cpuPlayerList, $this->deck, $this->numberOfCpu);
+            }
+
+            // ディーラー:2枚目のカード公開
+            $this->dealer->openSecondHand($this->dealer->getName(), $this->dealer->getHand());
+
+            // ディーラー:得点が16以下の場合Hit(ソフト17でstand)
+            $this->dealer->hitOrStand($this->dealer, $this->deck);
+
+            // ディーラー:全員の得点を表示
+            $this->dealer->displayAllScores($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
+
+            // ディーラー:全員の勝敗判定と配当支払い
+            Judge::judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
+            $this->chip->payout($this->player);
+
+            // チップがなくなったら(10以下)強制終了
+            if ($this->chip->getPlayerFund() < 10) {
+                echo 'チップがなくなりました。ブラックジャックを終了します。';
+                break;
+            }
+            // 終了判断
+            $this->continueOrNot();
+            if ($this->end) {
+                echo 'ブラックジャックを終了します。';
+                break;
+            }
         }
-
-        // ディーラー:カードを2枚引く&一枚目のみ表示
-        $this->dealer->initHand($this->deck);
-
-        // プレイヤー:得点が20以下の場合Hit or Stand
-        $this->player->hitOrStand($this->player, $this->deck);
-
-        // CPU:得点が16以下の場合Hit(ソフト17でstand)*人数分
-        if ($this->numberOfCpu > 0) {
-            $this->cpuPlayerList[0]->cpuHitOrStand($this->cpuPlayerList, $this->deck, $this->numberOfCpu);
-        }
-
-        // ディーラー:2枚目のカード公開
-        $this->dealer->openSecondHand($this->dealer->getName(), $this->dealer->getHand());
-
-        // ディーラー:得点が16以下の場合Hit(ソフト17でstand)
-        $this->dealer->hitOrStand($this->dealer, $this->deck);
-
-        // ディーラー:全員の得点を表示
-        $this->dealer->displayAllPlayerScores($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
-
-        // ディーラー:全員の勝敗判定
-        $this->dealer->judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
-
-        // 終了
-        echo 'ブラックジャックを終了します。';
     }
 
     // CPUの数を選択(0~2)
@@ -74,16 +104,31 @@ class Game
     }
 
     // $numberOfCpuの数の分だけCPUインスタンスを作成
-    public function createCpuPlayer($numberOfCpu)
+    public function createCpuPlayer()
     {
-        for ($i = 1; $i <= $numberOfCpu; $i++) {
+        for ($i = 1; $i <= $this->numberOfCpu; $i++) {
             $this->cpuPlayerList[] = new CpuPlayer("CPU{$i}");
         }
     }
 
-    // CPUの数を取得
-    public function getNamberOfCpu()
+    // 終了判断
+    public function continueOrNot()
     {
-        return $this->numberOfCpu;
+        $loop = true;
+        while ($loop) {
+            echo '続けますか?(Y/N)'.PHP_EOL;
+            $input = trim(fgets(STDIN));
+            switch ($input) {
+                case 'Y':
+                    $loop = false;
+                    break;
+                case 'N':
+                    $this->end = true;
+                    $loop = false;
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
