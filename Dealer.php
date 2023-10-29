@@ -5,6 +5,12 @@ require_once 'Player.php';
 class Dealer extends Player
 {
     protected $name = 'ディーラー';
+
+    // // testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+    // public function __construct(protected $score = 21)
+    // {
+    // }
+
     public function initHand($deck)
     {
         $this->addCardAndScore($deck->drawACard());
@@ -23,6 +29,11 @@ class Dealer extends Player
     {
         $lastHand = array_slice($hand, -1, 1);
         echo "{$name}の引いた2枚目のカードは".$lastHand[0][0].'の'.$lastHand[0][1].'でした。'.PHP_EOL;
+
+        if ($this->score == 21) {
+            $this->blackjack = true;
+            echo "{$this->name}:ブラックジャック!".PHP_EOL;
+        }
     }
 
     // ディーラー:得点が16以下の場合Hit(ソフト17でstand)
@@ -51,37 +62,5 @@ class Dealer extends Player
             }
         }
         echo "{$dealer->getName()}の得点は{$dealer->getScore()}です。".PHP_EOL;
-    }
-
-    // 勝敗判定
-    public function judge($player, $cpuPlayer, $dealer, $numberOfCpu)
-    {
-        if ($player->getScore() > 21) { // プレイヤーのバースト負け
-            echo "{$player->getname()}の負けです。".PHP_EOL;
-        } elseif ($dealer->getScore() > 21) { // ディーラーのバースト負け
-            echo "{$player->getname()}の勝ちです!".PHP_EOL;
-        } elseif ($player->getScore() === $dealer->getScore()) {
-            echo "{$player->getname()}と{$dealer->getName()}は引き分けです。".PHP_EOL;
-        } elseif ($player->getScore() > $dealer->getScore()) {
-            echo "{$player->getname()}の勝ちです!".PHP_EOL;
-        } elseif ($player->getScore() < $dealer->getScore()) {
-            echo "{$player->getname()}の負けです。".PHP_EOL;
-        }
-
-        if ($numberOfCpu > 0) {
-            for ($i = 0; $i < $numberOfCpu; $i++) {
-                if ($cpuPlayer[$i]->getScore() > 21) { // CPUのバースト負け
-                    echo "{$cpuPlayer[$i]->getname()}の負けです。".PHP_EOL;
-                } elseif ($dealer->getScore() > 21) { // ディーラーのバースト負け
-                    echo "{$cpuPlayer[$i]->getname()}の勝ちです!".PHP_EOL;
-                } elseif ($cpuPlayer[$i]->getScore() === $dealer->getScore()) {
-                    echo "{$cpuPlayer[$i]->getname()}と{$dealer->getName()}は引き分けです。".PHP_EOL;
-                } elseif ($cpuPlayer[$i]->getScore() > $dealer->getScore()) {
-                    echo "{$cpuPlayer[$i]->getname()}の勝ちです!".PHP_EOL;
-                } elseif ($cpuPlayer[$i]->getScore() < $dealer->getScore()) {
-                    echo "{$cpuPlayer[$i]->getname()}の負けです。".PHP_EOL;
-                }
-            }
-        }
     }
 }

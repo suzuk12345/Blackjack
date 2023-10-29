@@ -5,6 +5,9 @@ require_once 'Deck.php';
 require_once 'Player.php';
 require_once 'Dealer.php';
 require_once 'CpuPlayer.php';
+require_once 'Judge.php';
+require_once 'Action.php';
+require_once 'Chip.php';
 
 class Game
 {
@@ -12,11 +15,17 @@ class Game
     private $player;
     private $dealer;
     private $numberOfCpu = 0;
+    private $judge;
+    private $action;
+    private $chip;
     private $cpuPlayerList = [];
     private $end = false;
 
     public function start()
     {
+        $this->judge = new judge();
+        $this->chip = new Chip();
+
         // CPUの数を設定
         $this->setNumberOfCpuPlayer();
 
@@ -29,6 +38,8 @@ class Game
 
             // 設定した分CPUを生成
             $this->createCpuPlayer();
+
+            $this->chip->playerBet();
 
             // プレイヤー:カードを二枚引く&表示
             $this->player->initHand($this->deck);
@@ -58,9 +69,15 @@ class Game
             // ディーラー:全員の得点を表示
             $this->dealer->displayAllScores($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
 
-            // ディーラー:全員の勝敗判定
-            $this->dealer->judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
+            // ディーラー:全員の勝敗判定とチップ支払い
+            $this->judge->judge($this->player, $this->cpuPlayerList, $this->dealer, $this->numberOfCpu);
+            $this->chip->payout($this->player);
 
+            // チップがなくなったら(10以下)強制終了
+            if ($this->chip->getPlayerFund() < 10) {
+                echo 'チップがなくなりました。ブラックジャックを終了します。';
+                break;
+            }
             // 終了判断
             $this->continueOrNot();
             if ($this->end) {

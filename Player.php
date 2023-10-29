@@ -4,9 +4,17 @@ namespace Blackjack;
 class Player
 {
     protected $name = 'あなた';
-    protected $hand = [];
+    protected $hand= [];
     protected $score = 0;
     protected $aceCount = 0;
+    protected $blackjack = false;
+    private $result = '';
+    private $action = '';
+
+    // // testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest
+    // public function __construct(protected $hand = [['スペード', 'A', 11], ['スペード', 'K', 10]], protected $blackjack = true)
+    // {
+    // }
 
     // プレイヤーの名前を取得
     public function getName()
@@ -24,6 +32,34 @@ class Player
     public function getScore()
     {
         return $this->score;
+    }
+
+    // プレイヤーがブラックジャックかどうか取得
+    public function getBlacjak()
+    {
+        return $this->blackjack;
+    }
+
+    // プレイヤーの勝敗結果をセット
+    public function setWin()
+    {
+        $this->result = 'win';
+    }
+
+    public function setLose()
+    {
+        $this->result = 'lose';
+    }
+
+    public function setDraw()
+    {
+        $this->result = 'draw';
+    }
+
+    // プレイヤーの結果を取得
+    public function getResult()
+    {
+        return $this->result;
     }
 
 
@@ -55,6 +91,11 @@ class Player
         $this->displayLastHand($this->getName(), $this->getHand());
         $this->addCardAndScore($deck->drawACard());
         $this->displayLastHand($this->getName(), $this->getHand());
+
+        if ($this->score == 21) {
+            $this->blackjack = true;
+            echo "{$this->name}:ブラックジャック!".PHP_EOL;
+        }
     }
 
     // プレイヤー:得点が20以下の場合Hit or Stand
@@ -64,9 +105,9 @@ class Player
             $stand = false;
             if ($player->aceCount >= 1) {
                 $soft = $player->score - 10;
-                echo "あなたの現在の得点は{$player->score}({$soft})です。カードを引きますか？（Y/N）";
+                echo "あなたの現在の得点は{$player->score}({$soft})です。カードを引きますか？（Y/N）".PHP_EOL;
             } else {
-                echo "あなたの現在の得点は{$player->score}です。カードを引きますか？（Y/N）";
+                echo "あなたの現在の得点は{$player->score}です。カードを引きますか？（Y/N）".PHP_EOL;
             }
 
             $input = trim(fgets(STDIN));
