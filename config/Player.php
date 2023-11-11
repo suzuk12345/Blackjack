@@ -133,7 +133,7 @@ class Player
                     echo "{$player->name}の現在の得点は{$player->score}です。カードを引きますか？（Y/N）".PHP_EOL;
                 }
 
-                $input = trim(fgets(STDIN));
+                $input = strtoupper(trim(fgets(STDIN)));
 
                 switch ($input) {
                     case 'Y':
@@ -144,6 +144,8 @@ class Player
                         $player->stand = true;
                         break;
                     default:
+                        echo "入力が間違っています。".PHP_EOL;
+                        echo "Y(Yes)もしくはN(No)を入力してください。".PHP_EOL;
                         break;
                 }
                 if ($player->stand) {

@@ -34,7 +34,7 @@ class CpuPlayer extends Player
             for ($j = $cpuPlayerList[$i]->score; $j <= 16; $j = $cpuPlayerList[$i]->score) {
                 if ($cpuPlayerList[$i]->aceCount >= 1) {
                     $soft = $cpuPlayerList[$i]->score - 10;
-                    echo "{$cpuPlayerList[$i]->name}の現在の得点は{$cpuPlayerList[$i][$i]->score}({$soft})です。".PHP_EOL;
+                    echo "{$cpuPlayerList[$i]->name}の現在の得点は{$cpuPlayerList[$i]->score}({$soft})です。".PHP_EOL;
                 } else {
                     echo "{$cpuPlayerList[$i]->name}の現在の得点は{$cpuPlayerList[$i]->score}です。".PHP_EOL;
                 }

@@ -8,7 +8,7 @@ class Action
         $loop = true;
         while ($loop) {
             echo "アクションを行いますか?(Y/N)".PHP_EOL;
-            $input = trim(fgets(STDIN));
+            $input = strtoupper(trim(fgets(STDIN)));
             switch ($input) {
                 case 'Y':
                     self::option($player, $deck, $chip);
@@ -18,6 +18,8 @@ class Action
                     $loop = false;
                     break;
                 default:
+                    echo "入力が間違っています。".PHP_EOL;
+                    echo "Y(Yes)もしくはN(No)を入力してください。".PHP_EOL;
                     break;
             }
         }
@@ -31,7 +33,7 @@ class Action
         $loop = true;
         while ($loop) {
             echo 'サレンダー(SR)、ダブルダウン(DD)、やめる(C)の内から選んで実行してください。(SR/DD/C)'.PHP_EOL;
-            $input = trim(fgets(STDIN));
+            $input = strtoupper(trim(fgets(STDIN)));
             switch ($input) {
                 case 'SR':
                     self::surrender($player);
@@ -49,6 +51,7 @@ class Action
                     $loop = false;
                     break;
                 default:
+                    echo "入力が間違っています".PHP_EOL;
                     break;
             }
         }
