@@ -1,13 +1,13 @@
 <?php
 namespace Blackjack;
 
-require_once 'Deck.php';
-require_once 'Player.php';
-require_once 'Dealer.php';
-require_once 'CpuPlayer.php';
-require_once 'Judge.php';
-require_once 'Action.php';
-require_once 'Chip.php';
+require_once 'config/Deck.php';
+require_once 'config/Player.php';
+require_once 'config/Dealer.php';
+require_once 'config/CpuPlayer.php';
+require_once 'config/Judge.php';
+require_once 'config/Action.php';
+require_once 'config/Chip.php';
 
 class Game
 {
