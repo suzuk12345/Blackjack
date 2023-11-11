@@ -13,13 +13,21 @@ class Chip
             echo "賭けるチップをチップ残高の内から10の倍数で指定してください。(残高:{$this->playerFund})".PHP_EOL;
             $input = trim(fgets(STDIN));
             $input = (int)$input;
-            if ($input >= 10 && $input <= $this->playerFund && $input % 10 === 0) {
+            if ($input > 0 && $input <= $this->playerFund && $input % 10 === 0) {
                 $this->playerFund -= $input;
                 $this->playerStake = $input;
                 echo "賭けたチップは{$this->playerStake}です。(残高:{$this->playerFund})".PHP_EOL;
                 break;
             }
+            if ($input > $this->playerFund) {
+                echo "チップ残高が不足しています。".PHP_EOL;
+            } elseif ($input <= 0) {
+                echo "チップは自然数(0は含まない)で入力してください。".PHP_EOL;
+            } elseif ($input % 10 !== 0) {
+                echo "チップは10の倍数で指定してください。".PHP_EOL;
+            }
         }
+
     }
 
     // 配当支払い

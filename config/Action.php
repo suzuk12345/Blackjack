@@ -18,6 +18,8 @@ class Action
                     $loop = false;
                     break;
                 default:
+                    echo "入力が間違っています".PHP_EOL;
+                    echo "Y(Yes)もしくはN(No)を入力してください。".PHP_EOL;
                     break;
             }
         }
@@ -49,6 +51,7 @@ class Action
                     $loop = false;
                     break;
                 default:
+                    echo "入力が間違っています".PHP_EOL;
                     break;
             }
         }
