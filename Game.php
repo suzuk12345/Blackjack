@@ -117,7 +117,7 @@ class Game
         $loop = true;
         while ($loop) {
             echo '続けますか?(Y/N)'.PHP_EOL;
-            $input = trim(fgets(STDIN));
+            $input = strtoupper(trim(fgets(STDIN)));
             switch ($input) {
                 case 'Y':
                     $loop = false;
@@ -127,7 +127,7 @@ class Game
                     $loop = false;
                     break;
                 default:
-                    echo "入力が間違っています".PHP_EOL;
+                    echo "入力が間違っています。".PHP_EOL;
                     echo "Y(Yes)もしくはN(No)を入力してください。".PHP_EOL;
                     break;
             }
